@@ -54,20 +54,61 @@ latest_data <- logged_data %>%
 ## Recent Bus Experience!
 
 ```{r, out.width="50%", out.height="50%"}
+
 latest_entry <- latest_data %>% tail(1)
 
 if (latest_entry$experience >= 1 & latest_entry$experience <= 3) {
-  knitr::include_graphics("https://media1.tenor.com/m/fDnfCf1vYr0AAAAd/angry-angry-cat.gif")
+  cat1 <- image_read("https://media1.tenor.com/m/nBR_oOC_J0YAAAAC/cat-angry.gif") %>%
+    image_annotate(text = "Recent bus experience was puur!",
+                   color = "#FFFFFF",
+                   size = 30,
+                   font = "Impact",
+                   strokecolor = "#000",
+                   stroke = 2,
+                   gravity = "north") %>%
+    image_scale("200x200")
+  
+  cat1
   
 } else if (latest_entry$experience >= 4 & latest_entry$experience <= 6) {
-  knitr::include_graphics("https://media1.tenor.com/m/sCsJ0l1gxHUAAAAd/cat-meme.gif")
+  cat2 <- image_read("https://media1.tenor.com/m/sCsJ0l1gxHUAAAAd/cat-meme.gif") %>%
+    image_annotate(text = "Recent bus experience was just okay!",
+                   color = "#FFFFFF",
+                   size = 35,
+                   font = "Impact",
+                   strokecolor = "#000",
+                   stroke = 2,
+                   gravity = "north") %>%
+    image_scale("200x200")
+  
+  cat2
   
 } else if (latest_entry$experience >= 7 & latest_entry$experience <= 9) {
-  knitr::include_graphics("https://media1.tenor.com/m/fitGu2TwtHoAAAAd/cat-hyppy.gif")
+  cat3 <- image_read("https://media1.tenor.com/m/fitGu2TwtHoAAAAd/cat-hyppy.gif") %>%
+    image_annotate(text = "Recent bus experience was great!",
+                   color = "#FFFFFF",
+                   size = 25,
+                   font = "Impact",
+                   strokecolor = "#000",
+                   stroke = 2,
+                   gravity = "north") %>%
+    image_scale("200x200")
+  
+  cat3
   
 } else if (latest_entry$experience == 10) {
-  knitr::include_graphics("https://media1.tenor.com/m/9Nr32cJWZ8oAAAAC/catto.gif")
-}
+  cat4 <- image_read("https://media1.tenor.com/m/9Nr32cJWZ8oAAAAC/catto.gif") %>%
+    image_annotate(text = "PURRFECT!",
+                   color = "#FFFFFF",
+                   size = 20,
+                   font = "Impact",
+                   strokecolor = "#000",
+                   stroke = 2,
+                   gravity = "south") %>%
+    image_scale("200x200")
+  
+  cat4
+} 
 
 ```
 
