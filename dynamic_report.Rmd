@@ -1,0 +1,130 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+library(tidyverse)
+```
+
+```{css}
+body {
+    font-family: "Times New roman";
+    background-color: #f5f5f5;
+}
+
+h1, h2, h3 {
+    background-color: transparent;
+    font-family: "Helvetica"; 
+    font-weight: bold;
+}
+
+.plot-container {
+    background-color: white;  
+}
+
+table.dataframe {
+  background-color: lightblue;
+}
+```
+
+## What's going on with my bus?
+
+This report analyses the busyness levels and the average minutes late my buses are. I was able to explore how busyness levels (based on the number of people on the bus) vary across the buses I take in a week and how many minutes late my buses are on a certain day in the week.
+
+```{r}
+
+# Define the CSV file URL
+csv_file <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQulEdNNYOnQH-JxQ5L9VXtdYhdSCYaGAruXFseapxGaCH9-efR_R5_zJHFsKtTyg_ZPjg2M9uu3sa/pub?gid=1149016059&single=true&output=csv"
+
+# Read the CSV file
+logged_data <- read_csv(csv_file) 
+
+# Change the variable to latest_data and rename the columns
+latest_data <- logged_data %>%
+  rename(day = 2,
+         time = 3,
+         minutes_late = 4,  
+         busyness_level = 5,  
+         experience = 6)
+
+```
+
+## Recent Bus Experience!
+
+```{r, out.width="50%", out.height="50%"}
+latest_entry <- latest_data %>% tail(1)
+
+if (latest_entry$experience >= 1 & latest_entry$experience <= 3) {
+  knitr::include_graphics("1-3 cat.gif")
+  
+} else if (latest_entry$experience >= 4 & latest_entry$experience <= 6) {
+  knitr::include_graphics("4-6 cat.gif")
+  
+} else if (latest_entry$experience >= 7 & latest_entry$experience <= 9) {
+  knitr::include_graphics("7-9 cat.gif")
+  
+} else if (latest_entry$experience == 10) {
+  knitr::include_graphics("10 cat.gif")
+}
+
+```
+
+## Summary Values
+
+### mean_minutes_late_byDay
+
+```{r}
+# Define an order for the day Monday-Sunday
+day_order <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+mean_minutes_late_byDay <- latest_data %>%
+  group_by(day) %>% 
+  summarise(mean_minutes_late = round(mean(minutes_late), 2)) %>%  
+  mutate(day = factor(day, levels = day_order)) %>%  # Converts "day" column into a factor with a level
+  arrange(day) # Sorts day values according to order set by variable "day_order"
+print(mean_minutes_late_byDay)
+```
+
+```{r}
+max_mean_minutes_late <- max(mean_minutes_late_byDay$mean_minutes_late)
+max_day <- mean_minutes_late_byDay$day[which.max(mean_minutes_late_byDay$mean_minutes_late)]
+paste0("The highest mean minutes late for a bus out of all the days in a week is ", max_mean_minutes_late, " the day that has the highest mean minutes late is ", max_day,".")
+```
+
+### busyness_count
+
+```{r}
+# Define an order for busyness levels
+busyness_order <- c("Empty bus (less than 5 people)", 
+                    "Slightly full bus (between 5-15 people)", 
+                    "Moderately full bus (15-30 people)", 
+                    "Full bus (greater than 30 people)")
+
+busyness_count <- latest_data %>%
+  count(busyness_level) %>%  
+  mutate(busyness_level = factor(busyness_level, levels = busyness_order)) %>% 
+  arrange(busyness_level)
+print(busyness_count)
+```
+
+```{r}
+max_busyness_count <- max(busyness_count$n)  
+max_busyness_level <- busyness_count$busyness_level[which.max(busyness_count$n)]
+paste0("The highest count of busyness level is ", max_busyness_count," the busyness level with this count is ", max_busyness_level,".")
+```
+
+## Bar Charts
+
+```{r}
+ggplot(mean_minutes_late_byDay) + 
+  geom_bar(aes(x = day, y = mean_minutes_late, fill = day), stat = "identity") + 
+  labs(title = "Average Minutes Late by Day", x = "Day", y = "Mean Minutes Late")
+```
+
+```{r}
+ggplot(busyness_count) +
+  geom_bar(aes(x = busyness_level, y = n, fill = busyness_level), stat = "identity") + 
+  labs(title = "Busyness Frequency", x = "Busyness Level", y = "Count") + 
+  theme(axis.text.x = element_blank())
+```
