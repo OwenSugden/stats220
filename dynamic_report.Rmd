@@ -49,6 +49,10 @@ latest_data <- logged_data %>%
          busyness_level = 5,  
          experience = 6)
 
+```
+
+## Recent Bus Experience!
+
 ```{r, out.width="50%", out.height="50%"}
 latest_entry <- latest_data %>% tail(1)
 
