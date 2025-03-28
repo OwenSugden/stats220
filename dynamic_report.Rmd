@@ -67,7 +67,7 @@ if (latest_entry$experience >= 1 & latest_entry$experience <= 3) {
                    strokecolor = "#000",
                    stroke = 2,
                    gravity = "north") %>%
-    image_scale("200x200")
+    image_scale("300x300")
   
   cat1
   
@@ -80,7 +80,7 @@ if (latest_entry$experience >= 1 & latest_entry$experience <= 3) {
                    strokecolor = "#000",
                    stroke = 2,
                    gravity = "north") %>%
-    image_scale("200x200")
+    image_scale("300x300")
   
   cat2
   
@@ -93,7 +93,7 @@ if (latest_entry$experience >= 1 & latest_entry$experience <= 3) {
                    strokecolor = "#000",
                    stroke = 2,
                    gravity = "north") %>%
-    image_scale("200x200")
+    image_scale("300x300")
   
   cat3
   
@@ -106,7 +106,7 @@ if (latest_entry$experience >= 1 & latest_entry$experience <= 3) {
                    strokecolor = "#000",
                    stroke = 2,
                    gravity = "south") %>%
-    image_scale("200x200")
+    image_scale("300x300")
   
   cat4
 } 
