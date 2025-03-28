@@ -24,10 +24,6 @@ h1, h2, h3 {
 .plot-container {
     background-color: white;  
 }
-
-table.dataframe {
-  background-color: lightblue;
-}
 ```
 
 ## What's going on with my bus?
@@ -51,6 +47,7 @@ latest_data <- logged_data %>%
          experience = 6)
 
 ```
+
 
 ## Recent Bus Experience!
 
@@ -115,58 +112,36 @@ if (latest_entry$experience >= 1 & latest_entry$experience <= 3) {
 
 ## Summary Values
 
-### mean_minutes_late_byDay
+### max_minutes_late
 
 ```{r}
-# Define an order for the day Monday-Sunday
-day_order <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
-mean_minutes_late_byDay <- latest_data %>%
-  group_by(day) %>% 
-  summarise(mean_minutes_late = round(mean(minutes_late), 2)) %>%  
-  mutate(day = factor(day, levels = day_order)) %>%  # Converts "day" column into a factor with a level
-  arrange(day) # Sorts day values according to order set by variable "day_order"
-print(mean_minutes_late_byDay)
+max_minutes_late <- max(latest_data$minutes_late) 
+max_day <- latest_data$day[which.max(max_minutes_late)]
+paste0("The latest a bus has been so far is ", max_minutes_late, " minutes. The day that has the latest bus is a ", max_day,".")
 ```
-
-```{r}
-max_mean_minutes_late <- max(mean_minutes_late_byDay$mean_minutes_late)
-max_day <- mean_minutes_late_byDay$day[which.max(mean_minutes_late_byDay$mean_minutes_late)]
-paste0("The highest mean minutes late for a bus out of all the days in a week is ", max_mean_minutes_late, " the day that has the highest mean minutes late is ", max_day,".")
-```
-
 ### busyness_count
 
 ```{r}
-# Define an order for busyness levels
-busyness_order <- c("Empty bus (less than 5 people)", 
-                    "Slightly full bus (between 5-15 people)", 
-                    "Moderately full bus (15-30 people)", 
-                    "Full bus (greater than 30 people)")
-
 busyness_count <- latest_data %>%
-  count(busyness_level) %>%  
-  mutate(busyness_level = factor(busyness_level, levels = busyness_order)) %>% 
-  arrange(busyness_level)
-print(busyness_count)
-```
-
-```{r}
+  count(busyness_level) 
 max_busyness_count <- max(busyness_count$n)  
-max_busyness_level <- busyness_count$busyness_level[which.max(busyness_count$n)]
+max_busyness_level <- busyness_count$busyness_level[which.max(max_busyness_count)]
 paste0("The highest count of busyness level is ", max_busyness_count," the busyness level with this count is ", max_busyness_level,".")
+
 ```
 
 ## Bar Charts
 
 ```{r}
-ggplot(mean_minutes_late_byDay) + 
-  geom_bar(aes(x = day, y = mean_minutes_late, fill = day), stat = "identity") + 
+ggplot(latest_data, aes(x = factor(day, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")), 
+                 y = minutes_late, fill = day)) +
+  geom_bar(stat = "summary", fun = "mean") +
   labs(title = "Average Minutes Late by Day", x = "Day", y = "Mean Minutes Late")
 ```
 
 ```{r}
-ggplot(busyness_count) +
-  geom_bar(aes(x = busyness_level, y = n, fill = busyness_level), stat = "identity") + 
-  labs(title = "Busyness Frequency", x = "Busyness Level", y = "Count") + 
+ggplot(latest_data) +
+  geom_bar(aes(x = busyness_level, fill = busyness_level)) +
+  labs(title = "Count of Busyness Levels", x = "Busyness Level", y = "Count") +
   theme(axis.text.x = element_blank())
 ```
