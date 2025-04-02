@@ -1,0 +1,148 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+```
+
+```{r}
+library(tidyverse)
+library(magick)
+```
+
+
+
+```{css}
+body {
+    font-family: "Times New roman";
+    background-color: #f5f5f5;
+}
+
+h1, h2, h3 {
+    background-color: transparent;
+    font-family: "Helvetica"; 
+    font-weight: bold;
+}
+```
+
+## What's going on with my bus?
+
+This report analyses the busyness levels and the average minutes late my buses are. I was able to explore how busyness levels (based on the number of people on the bus) vary across the buses I take in a week and how many minutes late my buses are on a certain day in the week.
+
+```{r}
+
+# Define the CSV file URL
+csv_file <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQulEdNNYOnQH-JxQ5L9VXtdYhdSCYaGAruXFseapxGaCH9-efR_R5_zJHFsKtTyg_ZPjg2M9uu3sa/pub?output=csv"
+
+# Read the CSV file
+logged_data <- read_csv(csv_file) 
+
+# Change the variable to latest_data and rename the columns
+latest_data <- logged_data %>%
+  rename(day = 2,
+         time = 3,
+         minutes_late = 4,  
+         busyness_level = 5,  
+         experience = 6)
+```
+
+## Recent Bus Experience!
+
+```{r}
+
+latest_entry <- latest_data %>% tail(1)
+
+if (latest_entry$experience >= 1 & latest_entry$experience <= 3) {
+  cat1 <- image_read("https://media1.tenor.com/m/nBR_oOC_J0YAAAAC/cat-angry.gif") %>%
+    image_annotate(text = "Recent bus experience was puur!",
+                   color = "#FFFFFF",
+                   size = 30,
+                   font = "Impact",
+                   strokecolor = "#000",
+                   stroke = 2,
+                   gravity = "north") %>%
+    image_scale("300x300")
+  
+  cat1
+  
+} else if (latest_entry$experience >= 4 & latest_entry$experience <= 6) {
+  cat2 <- image_read("https://media1.tenor.com/m/sCsJ0l1gxHUAAAAd/cat-meme.gif") %>%
+    image_annotate(text = "Recent bus experience was just okay!",
+                   color = "#FFFFFF",
+                   size = 35,
+                   font = "Impact",
+                   strokecolor = "#000",
+                   stroke = 2,
+                   gravity = "north") %>%
+    image_scale("300x300")
+  
+  cat2
+  
+} else if (latest_entry$experience >= 7 & latest_entry$experience <= 9) {
+  cat3 <- image_read("https://media1.tenor.com/m/fitGu2TwtHoAAAAd/cat-hyppy.gif") %>%
+    image_annotate(text = "Recent bus experience was great!",
+                   color = "#FFFFFF",
+                   size = 25,
+                   font = "Impact",
+                   strokecolor = "#000",
+                   stroke = 2,
+                   gravity = "north") %>%
+    image_scale("300x300")
+  
+  cat3
+  
+} else if (latest_entry$experience == 10) {
+  cat4 <- image_read("https://media1.tenor.com/m/9Nr32cJWZ8oAAAAC/catto.gif") %>%
+    image_annotate(text = "PURRFECT!",
+                   color = "#FFFFFF",
+                   size = 20,
+                   font = "Impact",
+                   strokecolor = "#000",
+                   stroke = 2,
+                   gravity = "south") %>%
+    image_scale("300x300")
+  
+  cat4
+} 
+
+```
+
+## Summary Values
+
+### max_minutes_late
+
+```{r}
+max_minutes_late <- max(latest_data$minutes_late) 
+max_day <- latest_data$day[which.max(max_minutes_late)]
+paste0("The latest a bus has been so far is ", max_minutes_late, " minutes. The day that has the latest bus is a ", max_day,".")
+```
+
+### busyness_count
+
+```{r}
+busyness_count <- latest_data %>%
+  count(busyness_level) 
+max_busyness_count <- max(busyness_count$n)  
+max_busyness_level <- busyness_count$busyness_level[which.max(max_busyness_count)]
+paste0("The highest count of busyness level is ", max_busyness_count," the busyness level with this count is ", max_busyness_level,".")
+
+```
+
+## Bar Charts
+
+```{r}
+ggplot(latest_data, aes(x = factor(day, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")), 
+                 y = minutes_late, fill = day)) +
+  geom_bar(stat = "summary", fun = "mean") +
+  labs(title = "Average Minutes Late by Day", x = "Day", y = "Mean Minutes Late")
+```
+
+```{r}
+ggplot(latest_data) +
+  geom_bar(aes(x = busyness_level, fill = busyness_level)) +
+  labs(title = "Count of Busyness Levels", x = "Busyness Level", y = "Count") +
+  theme(axis.text.x = element_blank())
+```
