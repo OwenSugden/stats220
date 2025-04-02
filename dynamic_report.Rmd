@@ -41,6 +41,7 @@ latest_data <- logged_data %>%
          minutes_late = 4,  
          busyness_level = 5,  
          experience = 6)
+```
 
 ## Summary Values
 
