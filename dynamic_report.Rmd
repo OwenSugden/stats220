@@ -20,10 +20,6 @@ h1, h2, h3 {
     font-family: "Helvetica"; 
     font-weight: bold;
 }
-
-.plot-container {
-    background-color: white;  
-}
 ```
 
 ## What's going on with my bus?
@@ -45,70 +41,6 @@ latest_data <- logged_data %>%
          minutes_late = 4,  
          busyness_level = 5,  
          experience = 6)
-
-```
-
-
-## Recent Bus Experience!
-
-```{r}
-
-latest_entry <- latest_data %>% tail(1)
-
-if (latest_entry$experience >= 1 & latest_entry$experience <= 3) {
-  cat1 <- image_read("https://media1.tenor.com/m/nBR_oOC_J0YAAAAC/cat-angry.gif") %>%
-    image_annotate(text = "Recent bus experience was puur!",
-                   color = "#FFFFFF",
-                   size = 30,
-                   font = "Impact",
-                   strokecolor = "#000",
-                   stroke = 2,
-                   gravity = "north") %>%
-    image_scale("300x300")
-  
-  cat1
-  
-} else if (latest_entry$experience >= 4 & latest_entry$experience <= 6) {
-  cat2 <- image_read("https://media1.tenor.com/m/sCsJ0l1gxHUAAAAd/cat-meme.gif") %>%
-    image_annotate(text = "Recent bus experience was just okay!",
-                   color = "#FFFFFF",
-                   size = 35,
-                   font = "Impact",
-                   strokecolor = "#000",
-                   stroke = 2,
-                   gravity = "north") %>%
-    image_scale("300x300")
-  
-  cat2
-  
-} else if (latest_entry$experience >= 7 & latest_entry$experience <= 9) {
-  cat3 <- image_read("https://media1.tenor.com/m/fitGu2TwtHoAAAAd/cat-hyppy.gif") %>%
-    image_annotate(text = "Recent bus experience was great!",
-                   color = "#FFFFFF",
-                   size = 25,
-                   font = "Impact",
-                   strokecolor = "#000",
-                   stroke = 2,
-                   gravity = "north") %>%
-    image_scale("300x300")
-  
-  cat3
-  
-} else if (latest_entry$experience == 10) {
-  cat4 <- image_read("https://media1.tenor.com/m/9Nr32cJWZ8oAAAAC/catto.gif") %>%
-    image_annotate(text = "PURRFECT!",
-                   color = "#FFFFFF",
-                   size = 20,
-                   font = "Impact",
-                   strokecolor = "#000",
-                   stroke = 2,
-                   gravity = "south") %>%
-    image_scale("300x300")
-  
-  cat4
-} 
-
-```
 
 ## Summary Values
 
